@@ -16,24 +16,26 @@ const [loading, setLoading] = useState(true);
 
 const COLORS = ['#4F46E5', '#60A5FA', '#818CF8', '#CBD5E1'];
 useEffect(() => {
-Promise.all([
-  fetch('http://localhost:5000/api/dashboard/cards').then(r => r.json()),
-  fetch('http://localhost:5000/api/dashboard/payments').then(r => r.json()),
-  fetch('http://localhost:5000/api/dashboard/devices').then(r => r.json()),
-])
-.then(([cards, payments, devices]) => {
-  setCardStats(Array.isArray(cards) ? cards : []);
-  setPaymentsData(Array.isArray(payments) ? payments : []);
-  setDeviceData(Array.isArray(devices) ? devices : []);
-  setLoading(false);
-})
-.catch(err => {
-  console.error(err);
-  setCardStats([]);
-  setPaymentsData([]);
-  setDeviceData([]);
-  setLoading(false);
-});
+  const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
+
+  Promise.all([
+    fetch(`${BACKEND_URL}/api/dashboard/cards`).then(r => r.json()),
+    fetch(`${BACKEND_URL}/api/dashboard/payments`).then(r => r.json()),
+    fetch(`${BACKEND_URL}/api/dashboard/devices`).then(r => r.json()),
+  ])
+    .then(([cards, payments, devices]) => {
+      setCardStats(Array.isArray(cards) ? cards : []);
+      setPaymentsData(Array.isArray(payments) ? payments : []);
+      setDeviceData(Array.isArray(devices) ? devices : []);
+      setLoading(false);
+    })
+    .catch(err => {
+      console.error(err);
+      setCardStats([]);
+      setPaymentsData([]);
+      setDeviceData([]);
+      setLoading(false);
+    });
 }, []);
 
   return (

@@ -274,12 +274,11 @@ export default function SigninPage() {
           type="button"
           onClick={() => {
             localStorage.removeItem("token");
-            fetch("http://localhost:5000/api/auth/logout", {
+            fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`, {
               method: "POST",
               credentials: "include",
-            }).then(() => {
-              window.location.reload();
             });
+
           }}
           className="w-full bg-gray-500 hover:bg-gray-600 text-white py-2 rounded-md text-sm transition"
         >

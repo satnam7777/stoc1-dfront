@@ -49,20 +49,21 @@ export default function DashboardPage() {
   const iconsMap: Record<IconKey, React.ElementType> = { BarChart3, Users, DollarSign };
 
   // ------------------ Fetch Data ------------------
-  useEffect(() => {
-    fetch('http://localhost:5000/api/dashboard')
-      .then(res => res.json())
-      .then(data => {
-        setStats(data.stats);
-        setCampaignLine(data.campaignLine);
-        setCampaignBar(data.campaignBar);
-        setTopChannels(data.topChannels);
-        setFeaturedCampaigns(data.featuredCampaigns);
-        setExternalLinks(data.externalLinks);
-      })
-      .catch(err => console.error(err));
-  }, []);
+  const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
 
+useEffect(() => {
+  fetch(`${BACKEND_URL}/api/dashboard`)
+    .then(res => res.json())
+    .then(data => {
+      setStats(data.stats);
+      setCampaignLine(data.campaignLine);
+      setCampaignBar(data.campaignBar);
+      setTopChannels(data.topChannels);
+      setFeaturedCampaigns(data.featuredCampaigns);
+      setExternalLinks(data.externalLinks);
+    })
+    .catch(err => console.error(err));
+}, []);
   // ------------------ Click Outside Menu ------------------
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
