@@ -124,7 +124,6 @@ export async function getUserProfile(token: string) {
     method: "GET",
     headers: { 
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`
     },
     credentials: "include",
   });
@@ -141,10 +140,6 @@ export async function getUserProfile(token: string) {
 export async function logout(token: string) {
   const res = await fetch(`${API_BASE_URL}/auth/logout`, {
     method: "POST",
-    headers: { 
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`
-    },
     credentials: "include",
   });
 
