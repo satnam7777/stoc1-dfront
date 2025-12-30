@@ -9,11 +9,7 @@ import Header from '@/app/components/Header';
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
-  useEffect(() => {
-    if (!isAuthenticated()) {
-      router.push('/Authentication/signin');
-    }
-  }, []);
+
 
   return (
     <div className="flex min-h-screen">

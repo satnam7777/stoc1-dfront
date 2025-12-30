@@ -1,7 +1,7 @@
 // lib/api.ts
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL + '/api';
+// const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL + '/api';
 
-// const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'http://localhost:5000/api';
 
 export async function signin(email: string, password: string) {
   console.log("📤 API: Sending signin request to:", `${API_BASE_URL}/auth/login`);
@@ -124,7 +124,6 @@ export async function getUserProfile(token: string) {
     method: "GET",
     headers: { 
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`
     },
     credentials: "include",
   });
@@ -141,10 +140,6 @@ export async function getUserProfile(token: string) {
 export async function logout(token: string) {
   const res = await fetch(`${API_BASE_URL}/auth/logout`, {
     method: "POST",
-    headers: { 
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`
-    },
     credentials: "include",
   });
 
