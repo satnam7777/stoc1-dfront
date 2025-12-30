@@ -37,7 +37,7 @@ export default function SigninPage() {
       const data = await signin(email, password);
 
       if (data && data.token) {
-        router.push("/dashboard");
+        router.replace("/dashboard");
       } else {
         setError("Invalid login response");
       }
