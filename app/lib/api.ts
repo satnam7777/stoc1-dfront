@@ -1,7 +1,7 @@
 // lib/api.ts
-// const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL + '/api';
-
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL
+  ? `${process.env.NEXT_PUBLIC_API_URL}/api`
+  : 'http://localhost:5000/api';
 
 export async function signin(email: string, password: string) {
   console.log("📤 API: Sending signin request to:", `${API_BASE_URL}/auth/login`);
