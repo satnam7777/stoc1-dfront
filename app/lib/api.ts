@@ -6,7 +6,7 @@ const API_BASE_URL = 'http://localhost:5000/api';
 export async function signin(email: string, password: string) {
   console.log("📤 API: Sending signin request to:", `${API_BASE_URL}/auth/login`);
   console.log("📤 API: Request body:", { email, password });
-  
+
   try {
     const res = await fetch(`${API_BASE_URL}/auth/login`, {
       method: "POST",
@@ -74,7 +74,7 @@ export const getStockHistory = async (symbol: string) => {
 export async function signup({ username, email, password }: { username: string; email: string; password: string; }) {
   console.log("📤 API: Sending signup request to:", `${API_BASE_URL}/auth/register`);
   console.log("📤 API: Request body:", { username, email, password });
-  
+
   try {
     const res = await fetch(`${API_BASE_URL}/auth/register`, {
       method: "POST",
@@ -103,7 +103,7 @@ export async function signup({ username, email, password }: { username: string; 
 export async function verifyToken(token: string) {
   const res = await fetch(`${API_BASE_URL}/auth/verify`, {
     method: "POST",
-    headers: { 
+    headers: {
       "Content-Type": "application/json",
       "Authorization": `Bearer ${token}`
     },
@@ -122,7 +122,7 @@ export async function verifyToken(token: string) {
 export async function getUserProfile(token: string) {
   const res = await fetch(`${API_BASE_URL}/auth/me`, {
     method: "GET",
-    headers: { 
+    headers: {
       "Content-Type": "application/json",
     },
     credentials: "include",
@@ -148,6 +148,9 @@ export async function logout(token: string) {
   if (!res.ok) {
     throw new Error(data.message || "Logout failed");
   }
+
+  // Clear the client-side cookie explicitly
+  document.cookie = "auth-token=; path=/; max-age=0; secure; samesite=lax";
 
   return data; // { message }
 }
