@@ -14,6 +14,8 @@ interface UserData {
   username: string;
   email: string;
   role: string;
+  photo: string;
+
 }
 
 export default function ProfileDropdown() {
@@ -69,9 +71,10 @@ export default function ProfileDropdown() {
       }
     };
 
-    if (!tryDecodeToken()) {
-      fetchUser();
-    }
+    // Always try to decode first for immediate feedback
+    tryDecodeToken();
+    // Then fetch fresh data (including photo)
+    fetchUser();
   }, []);
 
   return (
@@ -80,7 +83,15 @@ export default function ProfileDropdown() {
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 text-gray-700 dark:text-white text-base sm:text-lg font-medium px-4 py-2 rounded hover:text-indigo-500 focus:outline-none"
       >
-        <User />
+        {user?.photo ? (
+          <img
+            src={user.photo}
+            alt="User"
+            className="w-8 h-8 rounded-full object-cover"
+          />
+        ) : (
+          <User />
+        )}
         <span className="hidden sm:inline text-nowrap">{user ? user.username : "Loading..."}</span>
         <ChevronDown
           className={`transition-transform duration-300 ${isOpen ? "rotate-180" : "rotate-0"}`}
@@ -93,7 +104,11 @@ export default function ProfileDropdown() {
             {/* Profile Summary */}
             <li className="border-b border-gray-200 dark:border-gray-700">
               <span className="flex px-5 py-3.5 items-center gap-3">
-                <User size={44} />
+                <img
+                  src={user?.photo || '/default-avatar.png'} // Fallback if no photo
+                  alt="Profile"
+                  className="w-12 h-12 rounded-full border-2 border-white dark:border-gray-800 object-cover"
+                />
                 <div>
                   <span className="block font-medium text-gray-800 dark:text-white">
                     {user ? user.username : "Guest"}
@@ -101,7 +116,7 @@ export default function ProfileDropdown() {
                   <span className="text-xs text-gray-500 dark:text-gray-400">
                     {user ? user.email : ""}
                   </span>
-                </div> 
+                </div>
               </span>
             </li>
 
@@ -129,7 +144,7 @@ export default function ProfileDropdown() {
 
             {/* Logout */}
             <li className="p-2">
-             <LogoutButton/>
+              <LogoutButton />
             </li>
           </ul>
         </div>

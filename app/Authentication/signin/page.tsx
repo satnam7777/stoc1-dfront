@@ -38,6 +38,9 @@ export default function SigninPage() {
         // Set cookie manually for the frontend domain so Middleware can read it
         // This is necessary when Backend and Frontend are on different domains
         document.cookie = `auth-token=${data.token}; path=/; max-age=86400; secure; samesite=lax`;
+
+        // Also save to localStorage for client-side components (like ProfileDrop) to easily access user info
+        localStorage.setItem("token", data.token);
       }
 
       // Redirect immediately

@@ -137,6 +137,26 @@ export async function getUserProfile(token: string) {
   return data; // { user }
 }
 
+export async function updateUserProfile(token: string, userData: any) {
+  const res = await fetch(`${API_BASE_URL}/auth/update`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
+    credentials: "include",
+    body: JSON.stringify(userData)
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.message || "Failed to update profile");
+  }
+
+  return data; // { message, user }
+}
+
 export async function logout(token: string) {
   const res = await fetch(`${API_BASE_URL}/auth/logout`, {
     method: "POST",
@@ -151,6 +171,8 @@ export async function logout(token: string) {
 
   // Clear the client-side cookie explicitly
   document.cookie = "auth-token=; path=/; max-age=0; secure; samesite=lax";
+  // Clear localStorage as well
+  localStorage.removeItem("token");
 
   return data; // { message }
 }
