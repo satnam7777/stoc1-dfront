@@ -30,10 +30,17 @@ export default function SigninPage() {
     try {
       setLoading(true);
 
-      // This sends credentials and sets HttpOnly cookie
-      await signin(email, password);
+      // This sends credentials and sets HttpOnly cookie (which works on same-domain/localhost)
+      // We also verify the token in the response to set a client-side cookie for Middleware (Production Cross-Domain fix)
+      const data = await signin(email, password);
 
-      // Redirect immediately because backend set the cookie
+      if (data.token) {
+        // Set cookie manually for the frontend domain so Middleware can read it
+        // This is necessary when Backend and Frontend are on different domains
+        document.cookie = `auth-token=${data.token}; path=/; max-age=86400; secure; samesite=lax`;
+      }
+
+      // Redirect immediately
       router.replace("/dashboard");
     } catch (err: any) {
       setError(err.message || "Signin failed");
