@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { signin } from "../../lib/api";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signin } from "../../lib/api";
 import Link from "next/link";
@@ -34,11 +33,8 @@ export default function SigninPage() {
       // This sends credentials and sets HttpOnly cookie
       await signin(email, password);
 
-      if (data && data.token) {
-        router.replace("/dashboard");
-      } else {
-        setError("Invalid login response");
-      }
+      // Redirect immediately because backend set the cookie
+      router.replace("/dashboard");
     } catch (err: any) {
       setError(err.message || "Signin failed");
     } finally {
