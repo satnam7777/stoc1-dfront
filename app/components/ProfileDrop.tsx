@@ -49,6 +49,7 @@ export default function ProfileDropdown() {
           username: payload.username || "",
           email: payload.email || "",
           role: payload.role || "",
+          photo: payload.photo || "",
         };
         if (decodedUser.username) {
           setUser(decodedUser);
