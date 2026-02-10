@@ -34,44 +34,17 @@ export default function ProfileDropdown() {
   }, []);
 
   useEffect(() => {
-    // Prefer decoding local JWT for instant name; fall back to fetch
-    const tryDecodeToken = () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) return false;
-        const parts = token.split(".");
-        if (parts.length !== 3) return false;
-        const payload = JSON.parse(atob(parts[1]));
-        const decodedUser: UserData = {
-          _id: payload.id || payload._id || "",
-          username: payload.username || "",
-          email: payload.email || "",
-          role: payload.role || "",
-        };
-        if (decodedUser.username) {
-          setUser(decodedUser);
-          return true;
-        }
-      } catch (err) {
-        // noop, fall back to network
-      }
-      return false;
-    };
-
     const fetchUser = async () => {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) return;
-        const data = await getUserProfile(token);
+        const data = await getUserProfile();
         setUser(data);
       } catch (error) {
         console.error("Failed to fetch user:", error);
+        // User is not authenticated, keep user as null
       }
     };
 
-    if (!tryDecodeToken()) {
-      fetchUser();
-    }
+    fetchUser();
   }, []);
 
   return (
@@ -94,14 +67,22 @@ export default function ProfileDropdown() {
             <li className="border-b border-gray-200 dark:border-gray-700">
               <span className="flex px-5 py-3.5 items-center gap-3">
                 <User size={44} />
-                <div>
+                <div className="flex-1">
                   <span className="block font-medium text-gray-800 dark:text-white">
                     {user ? user.username : "Guest"}
                   </span>
-                  <span className="text-xs text-gray-500 dark:text-gray-400">
+                  <span className="text-xs text-gray-500 dark:text-gray-400 block">
                     {user ? user.email : ""}
                   </span>
-                </div> 
+                  {user && (
+                    <span className={`inline-block mt-1 text-xs font-semibold px-2 py-0.5 rounded-full ${user.role === 'admin'
+                        ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
+                        : 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+                      }`}>
+                      {user.role === 'admin' ? '👑 Admin' : '👤 User'}
+                    </span>
+                  )}
+                </div>
               </span>
             </li>
 
@@ -114,6 +95,18 @@ export default function ProfileDropdown() {
                 <User /> <span>View Profile</span>
               </Link>
             </li>
+
+            {/* Admin Panel - Only visible to admins */}
+            {user?.role === 'admin' && (
+              <li className="px-2">
+                <Link
+                  href="/dashboard/admin"
+                  className="block px-2.5 py-2 flex gap-2 text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded-md font-medium"
+                >
+                  <Settings /> <span>Admin Panel</span>
+                </Link>
+              </li>
+            )}
 
             {/* Settings */}
             <li className="py-2 px-2">
@@ -129,7 +122,7 @@ export default function ProfileDropdown() {
 
             {/* Logout */}
             <li className="p-2">
-             <LogoutButton/>
+              <LogoutButton />
             </li>
           </ul>
         </div>

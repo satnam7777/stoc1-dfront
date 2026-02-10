@@ -15,7 +15,7 @@
 //   useEffect(() => {
 //     localStorage.removeItem("token");
 //     console.log("🧹 Cleared localStorage token");
-    
+
 //     // Check if there are any remaining tokens
 //     const remainingToken = localStorage.getItem("token");
 //     console.log("🔍 Remaining localStorage token:", remainingToken);
@@ -24,7 +24,7 @@
 // const handleSubmit = async (e: React.FormEvent) => {
 //   e.preventDefault();
 //   console.log("🚀 handleSubmit fired", { email, password });
-  
+
 //   // 🔒 Prevent empty submissions
 //   if (!email.trim() || !password.trim()) {
 //     setError("Please enter both email and password");
@@ -115,7 +115,7 @@
 //             Sign Up
 //           </a>
 //         </p>
-        
+
 //         <button
 //           type="button"
 //           onClick={() => {
@@ -181,7 +181,7 @@ export default function SigninPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    localStorage.removeItem("token");
+    // No need to clear localStorage token anymore since we use cookies
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -202,15 +202,19 @@ export default function SigninPage() {
       setLoading(true);
       setError("");
 
+      console.log("📤 Attempting login with:", email);
       const data = await signin(email, password);
+      console.log("✅ Login response:", data);
 
-      if (data && data.token) {
-        localStorage.setItem("token", data.token);
+      // Backend now uses httpOnly cookies, so we just check for successful response
+      if (data && data.message) {
+        console.log("✅ Login successful, redirecting to dashboard");
         router.push("/dashboard");
       } else {
         setError("Invalid login response");
       }
     } catch (err: any) {
+      console.error("❌ Login error:", err);
       setError(err.message || "Signin failed");
     } finally {
       setLoading(false);
@@ -252,9 +256,8 @@ export default function SigninPage() {
         <button
           type="submit"
           disabled={loading}
-          className={`w-full bg-[#635BFF] hover:bg-[#4f47e4] text-white py-3 rounded-md text-sm font-semibold transition ${
-            loading ? "opacity-50 cursor-not-allowed" : ""
-          }`}
+          className={`w-full bg-[#635BFF] hover:bg-[#4f47e4] text-white py-3 rounded-md text-sm font-semibold transition ${loading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
         >
           {loading ? "Signing In..." : "Sign In"}
         </button>
@@ -272,13 +275,17 @@ export default function SigninPage() {
         {/* Clear Session Button */}
         <button
           type="button"
-          onClick={() => {
-            localStorage.removeItem("token");
-            fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`, {
-              method: "POST",
-              credentials: "include",
-            });
-
+          onClick={async () => {
+            try {
+              await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`, {
+                method: "POST",
+                credentials: "include",
+              });
+              console.log("✅ Session cleared");
+              router.push("/Authentication/signin");
+            } catch (err) {
+              console.error("❌ Logout error:", err);
+            }
           }}
           className="w-full bg-gray-500 hover:bg-gray-600 text-white py-2 rounded-md text-sm transition"
         >

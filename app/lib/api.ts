@@ -6,7 +6,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL + '/api';
 export async function signin(email: string, password: string) {
   console.log("📤 API: Sending signin request to:", `${API_BASE_URL}/auth/login`);
   console.log("📤 API: Request body:", { email, password });
-  
+
   try {
     const res = await fetch(`${API_BASE_URL}/auth/login`, {
       method: "POST",
@@ -74,7 +74,7 @@ export const getStockHistory = async (symbol: string) => {
 export async function signup({ username, email, password }: { username: string; email: string; password: string; }) {
   console.log("📤 API: Sending signup request to:", `${API_BASE_URL}/auth/register`);
   console.log("📤 API: Request body:", { username, email, password });
-  
+
   try {
     const res = await fetch(`${API_BASE_URL}/auth/register`, {
       method: "POST",
@@ -103,7 +103,7 @@ export async function signup({ username, email, password }: { username: string; 
 export async function verifyToken(token: string) {
   const res = await fetch(`${API_BASE_URL}/auth/verify`, {
     method: "POST",
-    headers: { 
+    headers: {
       "Content-Type": "application/json",
       "Authorization": `Bearer ${token}`
     },
@@ -119,12 +119,11 @@ export async function verifyToken(token: string) {
   return data; // { message, user }
 }
 
-export async function getUserProfile(token: string) {
+export async function getUserProfile() {
   const res = await fetch(`${API_BASE_URL}/auth/me`, {
     method: "GET",
-    headers: { 
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`
+    headers: {
+      "Content-Type": "application/json"
     },
     credentials: "include",
   });
@@ -138,12 +137,11 @@ export async function getUserProfile(token: string) {
   return data; // { user }
 }
 
-export async function logout(token: string) {
+export async function logout() {
   const res = await fetch(`${API_BASE_URL}/auth/logout`, {
     method: "POST",
-    headers: { 
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`
+    headers: {
+      "Content-Type": "application/json"
     },
     credentials: "include",
   });
