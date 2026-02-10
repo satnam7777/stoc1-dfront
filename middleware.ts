@@ -3,7 +3,8 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
-  const token = request.cookies.get("auth-token")?.value;
+  // Check for both possible cookie names (backend sets both 'token' and 'auth-token')
+  const token = request.cookies.get("token")?.value || request.cookies.get("auth-token")?.value;
 
   console.log("🔍 Middleware - Path:", request.nextUrl.pathname, "Token:", token ? "exists" : "none");
 
